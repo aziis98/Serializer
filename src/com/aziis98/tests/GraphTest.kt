@@ -2,7 +2,7 @@ package com.aziis98.tests
 
 import com.aziis98.graph.Graph
 import com.aziis98.serializer.*
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 import java.nio.file.Paths
 

@@ -1,6 +1,7 @@
-package com.aziis98.serializer
+package com.aziis98.tests
 
-import junit.framework.Assert.assertEquals
+import com.aziis98.serializer.*
+import org.junit.Assert.*
 import org.junit.Test
 import java.io.*
 import java.nio.file.Paths
