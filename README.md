@@ -1,8 +1,3 @@
 #Serializer
 
-## entry
-
-<string> := <length> [chars]
-
-
-START_ENTRY <string> START_VALUE <value>
+A kotlin libray to serialize objects to binary files
