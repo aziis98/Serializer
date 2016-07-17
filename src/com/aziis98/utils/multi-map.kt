@@ -22,6 +22,12 @@ class MultiMap<K, V>() {
         }
     }
 
+    fun putValues(key: K, vararg values: V) {
+        values.forEach {
+            put(key, it)
+        }
+    }
+
     fun putAll(from: Map<out K, V>) {
         from.forEach { entry ->
             put(entry.key, entry.value)
@@ -67,7 +73,7 @@ class MultiMap<K, V>() {
 }
 
 /**
- *
+ * Ex. multiMapOf(1 to 'A', 2 to 'B', 3 to 'C', 2 to 'X')
  */
 fun <K, V> multiMapOf(vararg pairs: Pair<K, V>) = MultiMap<K, V>().apply {
     pairs.forEach {
@@ -75,7 +81,10 @@ fun <K, V> multiMapOf(vararg pairs: Pair<K, V>) = MultiMap<K, V>().apply {
     }
 }
 
-fun <K, V> multiMapOfLists(vararg pairs: Pair<K, List<V>>) = MultiMap<K, V>().apply {
+/**
+ * Ex. multiMapOfLists(1 to listOf('A'), 2 to listOf('B', 'X'))
+ */
+fun <K, V> multiMapOfLists(vararg pairs: Pair<K, Collection<V>>) = MultiMap<K, V>().apply {
     pairs.forEach {
         putList(it.first, it.second)
     }
