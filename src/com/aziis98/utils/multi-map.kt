@@ -4,14 +4,14 @@ package com.aziis98.utils
 
 class MultiMap<K, V>() {
 
-    private val map = mutableMapOf<K, MutableList<V>>()
+    internal val map = mutableMapOf<K, MutableList<V>>()
 
     fun clear() {
         map.clear()
     }
 
     fun put(key: K, value: V): Boolean {
-        checkValueList(key)
+        checkKeyList(key)
 
         return map[key]!!.add(value)
     }
@@ -64,7 +64,7 @@ class MultiMap<K, V>() {
         return map.toString()
     }
 
-    private fun checkValueList(key: K) {
+    private fun checkKeyList(key: K) {
         if (!map.containsKey(key)) {
             map.put(key, mutableListOf())
         }
@@ -87,5 +87,11 @@ fun <K, V> multiMapOf(vararg pairs: Pair<K, V>) = MultiMap<K, V>().apply {
 fun <K, V> multiMapOfLists(vararg pairs: Pair<K, Collection<V>>) = MultiMap<K, V>().apply {
     pairs.forEach {
         putList(it.first, it.second)
+    }
+}
+
+fun <K, V> multiMapOfMap(map: Map<K, List<V>>) = MultiMap<K, V>().apply {
+    map.forEach {
+        putList(it.key, it.value)
     }
 }

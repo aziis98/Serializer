@@ -1,5 +1,6 @@
 package com.aziis98.serializer
 
+import com.aziis98.utils.*
 import java.io.*
 import java.util.*
 
@@ -14,7 +15,7 @@ fun <T> OutputStream.writeCollection(collection: Collection<T>, serializer: Outp
 
 fun <T> InputStream.readCollection(deserializer: InputStream.() -> T): Collection<T> {
     val len = readInt()
-    val list = ArrayList<T>()
+    val list = mutableListOf<T>()
 
     repeat(len) {
         list += deserializer()
@@ -43,6 +44,21 @@ fun <K, V> InputStream.readMap(keyDeserializer: InputStream.() -> K,
     }
 
     return map
+}
+
+fun <K, V> OutputStream.writeMultiMap(multiMap: MultiMap<K, V>,
+                                      keySerializer: OutputStream.(K) -> Unit,
+                                      valueSerializer: OutputStream.(V) -> Unit) {
+    writeMap(multiMap.map, keySerializer) {
+        writeCollection(it, valueSerializer)
+    }
+}
+
+fun <K, V> InputStream.readMultiMap(keyDeserializer: InputStream.() -> K,
+                                    valueDeserializer: InputStream.() -> V): MultiMap<K, V> {
+    return multiMapOfMap(readMap(keyDeserializer) {
+        readCollection(valueDeserializer).toList()
+    })
 }
 
 

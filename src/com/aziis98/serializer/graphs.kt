@@ -28,13 +28,41 @@ fun <K, V> InputStream.readGraph(keyDeserializer: InputStream.() -> K,
     return graph
 }
 
-fun <T, L> OutputStream.writeGraph(graphModel: GraphModel<T, L>,
-                                   valueSerializer: OutputStream.(T?) -> Unit,
-                                   arrowDataSerializer: OutputStream.(L) -> Unit) {
-    graphModel.nodes.forEach { node ->
-        valueSerializer(this, node.value)
+fun <T, L> OutputStream.writeGraphModel(graphModel: GraphModel<T, L>,
+                                   valueSerializer: OutputStream.(T) -> Unit,
+                                   arrowDataSerializer: OutputStream.(L?) -> Unit) {
+    writeMap(graphModel.nodes, OutputStream::writeInt) {
+        valueSerializer(it.value)
     }
-    graphModel.links.forEach { link ->
+    writeCollection(graphModel.links) {
+        writeInt(it.start.id)
+        arrowDataSerializer(it.data)
+        writeInt(it.end.id)
+    }
+}
 
+fun <T> OutputStream.writeGraphModel(graphModel: GraphModel<T, Nothing>,
+                                     valueSerializer: OutputStream.(T) -> Unit) {
+    writeGraphModel(graphModel, valueSerializer, { })
+}
+
+fun <T, L> InputStream.readGraphModel(valueDeserializer: InputStream.() -> T,
+                                      arrowDataDeserializer: InputStream.() -> L?): GraphModel<T, L> {
+    val graphModel = GraphModel<T, L>()
+
+    readMap(InputStream::readInt, valueDeserializer).forEach { entry ->
+        graphModel.addNode(id = entry.key, value = entry.value)
     }
+
+    readCollection({
+        graphModel.addLinkById(readInt(), readInt()).apply {
+            data = arrowDataDeserializer()
+        }
+    })
+
+    return graphModel
+}
+
+fun <T> InputStream.readGraphModel(valueDeserializer: InputStream.() -> T): GraphModel<T, Nothing> {
+    return readGraphModel(valueDeserializer, { null })
 }

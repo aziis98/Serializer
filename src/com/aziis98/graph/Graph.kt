@@ -37,7 +37,7 @@ class Graph<K, V>(val value: V? = null) {
         children.values.forEach(action)
     }
 
-    /////////////////////////////////
+    // -------------------- //
 
     val valueNotNull: V
         get() = value!!

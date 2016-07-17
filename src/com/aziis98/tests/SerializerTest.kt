@@ -1,7 +1,8 @@
 package com.aziis98.tests
 
+import com.aziis98.graph.*
 import com.aziis98.serializer.*
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.*
 import java.nio.file.Paths
@@ -62,9 +63,9 @@ internal class SerializerTest {
         // ---------------- //
 
         val loaded = Serializer.load(Paths.get("res/names.bdb")) {
-            readCollection {
+            readCollection({
                 readString() to readString()
-            }
+            })
         }
 
         assertEquals(names, loaded)
@@ -101,6 +102,34 @@ internal class SerializerTest {
         }
 
         assertEquals(dictionary, loaded)
+
+    }
+
+    @Test
+    fun testIOGraphModel() {
+
+        val path = "res/seq-graph.bdb"
+
+        val outModel = GraphModelNodes<String>()
+
+        val node1 = outModel.addNode("Elemento 1")
+        val node2 = outModel.addNode("Elemento 2")
+        val node3 = outModel.addNode("Elemento 3")
+
+        node1 linkTo node2 linkTo node3 linkTo node1
+        Serializer.save(outModel, Paths.get(path)) { model ->
+            writeGraphModel(model) { writeString(it) }
+        }
+
+        // ---------------- //
+
+        val inModel = Serializer.load(Paths.get(path)) {
+            readGraphModel {
+                readString()
+            }
+        }
+
+        println(inModel.toString())
 
     }
 

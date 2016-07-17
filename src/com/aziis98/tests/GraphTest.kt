@@ -1,8 +1,8 @@
 package com.aziis98.tests
 
-import com.aziis98.graph.Graph
+import com.aziis98.graph.*
 import com.aziis98.serializer.*
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.nio.file.Paths
 
@@ -35,6 +35,8 @@ internal class GraphTest {
                        |        test2 -> Graph(prova2)
                        |    b -> Graph(Ciao)
                        |""".trimMargin(), root.toFormattedString())
+
+        println(root.toGraphModel())
 
     }
 
