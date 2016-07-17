@@ -1,6 +1,6 @@
 package com.aziis98.serializer
 
-import com.aziis98.graph.Graph
+import com.aziis98.graph.*
 import java.io.*
 import java.util.*
 
@@ -26,4 +26,15 @@ fun <K, V> InputStream.readGraph(keyDeserializer: InputStream.() -> K,
     )
 
     return graph
+}
+
+fun <T, L> OutputStream.writeGraph(graphModel: GraphModel<T, L>,
+                                   valueSerializer: OutputStream.(T?) -> Unit,
+                                   arrowDataSerializer: OutputStream.(L) -> Unit) {
+    graphModel.nodes.forEach { node ->
+        valueSerializer(this, node.value)
+    }
+    graphModel.links.forEach { link ->
+
+    }
 }
